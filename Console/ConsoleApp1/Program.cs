@@ -2,34 +2,37 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
-int n = 10;
-Console.WriteLine(Fibo(n));
-
-/// <summary>
-/// fibonacci function
-/// </summary>
-/// <param name="n"></param>
-/// <returns></returns>
-static long Fibo(int n)
+int[] array = {73, 57, 49, 3, 99, 133, 20, 1};
+Console.WriteLine("排序前 ");
+foreach (int i in array)
 {
-    if(n <= 1)
+    Console.Write(i + ", ");
+}
+
+Console.WriteLine("");
+
+bubblesort(array);
+
+static void bubblesort(int[] array)
+{
+    int len = array.Length;
+
+    for(int i = 0; i < len - 1; i++)
     {
-        return n;
+        for(int j = 0; j < len - i - 1; j++)
+        {
+            if(array[j] > array[j + 1])
+            {
+                int temp = array[j];
+                array[j] = array[j + 1];
+                array[j + 1] = temp;
+            }
+        }
     }
 
-    // n = 0, result = 0
-    long first = 0;
-    // n = 1, result = 1
-    long second = 1;
-    long result = 0;
-
-    // 要注意這邊是從2開始, 
-    for(int i = 2; i <= n; i++)
+    Console.WriteLine("排序後 ");
+    foreach(int value in array)
     {
-        result = first + second;
-        first = second;
-        second = result;
+        Console.Write(value + ", ");
     }
-
-    return result;
 }
