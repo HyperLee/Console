@@ -10,7 +10,6 @@ foreach (int i in array)
 }
 
 Console.WriteLine("");
-
 bubblesort(array);
 
 static void bubblesort(int[] array)
