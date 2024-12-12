@@ -2,36 +2,32 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
-int[] array = {73, 57, 49, 3, 99, 133, 20, 1};
-Console.WriteLine("排序前 ");
-foreach (int i in array)
+int[] array = {25, 64, 9, 4, 100};
+int k = 4;
+
+Console.WriteLine("res: " + PickGifts(array, k));
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="gifts">禮物大小</param>
+/// <param name="k">跑幾輪/取幾次禮物</param>
+/// <returns></returns>
+static long PickGifts(int[] gifts, int k)
 {
-    Console.Write(i + ", ");
-}
+    int index = 0;
+    long res = 0;
 
-Console.WriteLine("");
-bubblesort(array);
-
-static void bubblesort(int[] array)
-{
-    int len = array.Length;
-
-    for(int i = 0; i < len - 1; i++)
+    for(int i = 0; i < k; i++)
     {
-        for(int j = 0; j < len - i - 1; j++)
-        {
-            if(array[j] > array[j + 1])
-            {
-                int temp = array[j];
-                array[j] = array[j + 1];
-                array[j + 1] = temp;
-            }
-        }
+        index = Array.IndexOf(gifts, gifts.Max());
+        gifts[index] = (int)Math.Sqrt(gifts[index]);
     }
 
-    Console.WriteLine("排序後 ");
-    foreach(int value in array)
+    for(int i = 0; i < gifts.Length; i++)
     {
-        Console.Write(value + ", ");
+        res += gifts[i];
     }
+
+    return res;
 }
