@@ -2,32 +2,62 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
-int[] array = {25, 64, 9, 4, 100};
-int k = 4;
+int[] input = { 2, 1, 3, 4, 5, 2 };
 
-Console.WriteLine("res: " + PickGifts(array, k));
+Console.WriteLine("res: " + FindScore(input));
+
 
 /// <summary>
 /// 
 /// </summary>
-/// <param name="gifts">禮物大小</param>
-/// <param name="k">跑幾輪/取幾次禮物</param>
+/// <param name="nums"></param>
 /// <returns></returns>
-static long PickGifts(int[] gifts, int k)
+static long FindScore(int[] nums)
 {
-    int index = 0;
-    long res = 0;
-
-    for(int i = 0; i < k; i++)
+    long Score = 0;
+    int n = nums.Length;
+    int[][] numIndices = new int[n][];
+    for(int i = 0; i < n; i++)
     {
-        index = Array.IndexOf(gifts, gifts.Max());
-        gifts[index] = (int)Math.Sqrt(gifts[index]);
+        numIndices[i] = new int[2];
+        numIndices[i][0] = nums[i];
+        numIndices[i][1] = i;
     }
 
-    for(int i = 0; i < gifts.Length; i++)
+    Array.Sort(numIndices, (a, b) =>
     {
-        res += gifts[i];
+        if(a[0] != b[0])
+        {
+            return a[0] - b[0];
+        }
+        else
+        {
+            return a[1] - b[1];
+        }
+
+    });
+
+    bool[] marked = new bool[n];
+    for(int i = 0; i < n; i++)
+    {
+        int num = numIndices[i][0], index = numIndices[i][1];
+
+        if(!marked[index])
+        {
+            Score += num;
+            marked[index] = true;
+
+            if(index > 0)
+            {
+                marked[index - 1] = true;
+            }
+
+            if(index < n - 1)
+            {
+                marked[index +1] = true;
+            }
+        }
     }
 
-    return res;
+    return Score;
 }
