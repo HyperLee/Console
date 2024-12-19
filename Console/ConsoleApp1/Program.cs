@@ -2,33 +2,48 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
-int[] prices = { 8, 4, 6, 2, 3 };
-var res = FinalPrices(prices);
-Console.Write("res: ");
-foreach(int value in res)
-{
-    Console.Write(value + ", ");
-}
+int[] input = { 4, 3, 2, 1, 0 };
+Console.WriteLine("method1: " + MaxChunksToSorted(input));
+Console.WriteLine("method2: " + MaxChunksToSorted2(input));
 
-static int[] FinalPrices(int[] prices)
+static int MaxChunksToSorted(int[] arr)
 {
-    int n = prices.Length;
-    int[] res = new int[n];
+    int m = 0;
+    int res = 0;
 
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < arr.Length; i++)
     {
-        int discount = 0;
-        for(int j = i + 1; j < n; j++)
+        m = Math.Max(m, arr[i]);
+        if(m == i)
         {
-            if(prices[j] <= prices[i])
-            {
-                discount = prices[j];
-                break;
-            }
+            res++;
         }
-
-        res[i] = prices[i] - discount;
     }
 
     return res;
 }
+
+static int MaxChunksToSorted2(int[] arr)
+{
+    int n = arr.Length;
+    int res = 0;
+
+    for(int i = 0, j = 0, min = n, max = -1; i < n; i++)
+    {
+        min = Math.Min(min, arr[i]);
+        max = Math.Max(max, arr[i]);
+
+        if(j == min && i == max)
+        {
+            res++;
+            j = i + 1;
+            min = 0;
+            max = -1;
+        }
+    }
+
+    return res;
+}
+
+
+
