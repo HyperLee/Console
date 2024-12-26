@@ -2,85 +2,77 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
+string s = "anagram";
+string t = "nagaram";
 
-using System.Security.AccessControl;
+Console.WriteLine("方法1: " + IsAnagram(s, t));
+Console.WriteLine("方法2: " + IsAnagram2(s, t));
 
-TreeNode root = new TreeNode(1);
-
-root.left = new TreeNode(3);
-root.right = new TreeNode(2);
-
-root.left. left = new TreeNode(7);
-root.left.right = new TreeNode(6);
-
-root.right.left = new TreeNode(5);
-root.right.right = new TreeNode(4);
-
-Console.WriteLine("res: " + MinimumOperations(root));
-
-static int MinimumOperations(TreeNode root)
+static bool IsAnagram(string s, string t)
 {
-    int res = 0;
-    Queue<TreeNode> queue = new Queue<TreeNode>();
-    queue.Enqueue(root);
-
-    while(queue.Count > 0)
+    if(s.Length != t.Length)
     {
-        int size = queue.Count;
-        int[] arr = new int[size];
-        int[] sorted = new int[size];
-        for(int i = 0; i < size; i++)
-        {
-            TreeNode node = queue.Dequeue();
-            arr[i] = node.val;
-            sorted[i] = node.val;
-            if(node.left != null)
-            {
-                queue.Enqueue(node.left);
-            }
-            if(node.right != null)
-            {
-                queue.Enqueue(node.right);
-            }
-        }
-        Array.Sort(sorted);
-        IDictionary<int, int> targetIndices = new Dictionary<int, int>();
-        for(int i = 0; i < size; i++)
-        {
-            targetIndices.Add(sorted[i], i);
-        }
+        return false;
+    }
 
-        for(int i = 0; i < size; i++)
+    char[] a = s.ToCharArray();
+    char[] b = t.ToCharArray();
+
+    Array.Sort(a);
+    Array.Sort(b);
+
+    if(a.SequenceEqual(b))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+static bool IsAnagram2(string s, string t)
+{
+    if(s.Length != t.Length)
+    {
+        return false;
+    }
+
+    Dictionary<char, int> dic = new Dictionary<char, int>();
+    char[] a = s.ToCharArray();
+    char[] b = t.ToCharArray();
+
+    foreach(char c in a)
+    {
+        if(dic.ContainsKey(c))
         {
-            while(arr[i] != sorted[i])
-            {
-                int targetIndex = targetIndices[arr[i]];
-                Swap(arr, i, targetIndex);
-                res++;
-            }
+            dic[c]++;
+        }
+        else
+        {
+            dic.Add(c, 1);
         }
     }
 
-    return res;
-}
-
-
-static void Swap(int[] arr, int index1, int index2)
-{
-    int temp = arr[index1];
-    arr[index1] = arr[index2];
-    arr[index2] = temp; 
-}
-
-public class TreeNode
-{
-    public int val;
-    public TreeNode left;
-    public TreeNode right;
-    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+    foreach(char c in b)
     {
-        this.val = val;
-        this.left = left;
-        this.right = right;
+        if(dic.ContainsKey(c))
+        {
+            dic[c]--;
+        }
+        else
+        {
+            return false;
+        }
     }
+
+    foreach(var item in dic)
+    {
+        if(item.Value != 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
