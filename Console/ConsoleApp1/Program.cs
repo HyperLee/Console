@@ -2,77 +2,30 @@
 // Console.WriteLine("Hello, World!");
 
 // main function
-string s = "anagram";
-string t = "nagaram";
+int[] input = { -1, 0, 3, 5, 9, 12 };
+int target = 2;
+Console.WriteLine("res: " + Search(input, target));
 
-Console.WriteLine("方法1: " + IsAnagram(s, t));
-Console.WriteLine("方法2: " + IsAnagram2(s, t));
-
-static bool IsAnagram(string s, string t)
+static int Search(int[] nums, int target)
 {
-    if(s.Length != t.Length)
+    int left = 0;
+    int right = nums.Length - 1;
+    while(left <= right)
     {
-        return false;
-    }
-
-    char[] a = s.ToCharArray();
-    char[] b = t.ToCharArray();
-
-    Array.Sort(a);
-    Array.Sort(b);
-
-    if(a.SequenceEqual(b))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-static bool IsAnagram2(string s, string t)
-{
-    if(s.Length != t.Length)
-    {
-        return false;
-    }
-
-    Dictionary<char, int> dic = new Dictionary<char, int>();
-    char[] a = s.ToCharArray();
-    char[] b = t.ToCharArray();
-
-    foreach(char c in a)
-    {
-        if(dic.ContainsKey(c))
+        int middle = left + (right - left) / 2;
+        if(nums[middle] > target)
         {
-            dic[c]++;
+            right = middle - 1;
+        }
+        else if(nums[middle] < target)
+        {
+            left = middle + 1;
         }
         else
         {
-            dic.Add(c, 1);
+            return middle;
         }
     }
 
-    foreach(char c in b)
-    {
-        if(dic.ContainsKey(c))
-        {
-            dic[c]--;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    foreach(var item in dic)
-    {
-        if(item.Value != 0)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return -1;
 }
