@@ -5,80 +5,52 @@ using System.Runtime.InteropServices;
 
 class Program
 {
-    // main function
-    public class TreeNode
+    public class ListNode
     {
         public int val;
-        public TreeNode left;
-        public TreeNode right;
-        public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+        public ListNode next;
+        public ListNode(int x)
         {
-            this.val = val;
-            this.left = left;
-            this.right = right;
+            val = x;
+            next = null;
         }
     }
 
     static void Main(string[] args)
     {
-        TreeNode root = new TreeNode(3);
-        root.left = new TreeNode(9);
-        root.right = new TreeNode(20);
-        root.right.left = new TreeNode(15);
-        root.right.right = new TreeNode(7);
+        ListNode l1 = new ListNode(3);
+        l1.next = new ListNode(2);
+        l1.next.next = new ListNode(0);
+        l1.next.next.next = new ListNode(-4);
+        l1.next.next.next.next = l1.next;
 
-        Console.WriteLine("res: " + IsBalanced(root));
-        Console.WriteLine("res2: " + IsBalanced2(root));
+        //Console.WriteLine("method1: " + HasCycle(l1));
+        Console.WriteLine("method2: " + HasCycle2(l1));
+        //Console.ReadKey();
     }
 
-    public static bool IsBalanced(TreeNode root)
+
+    public static bool HasCycle2(ListNode head)
     {
-        if(root == null)
+        if(head == null || head.next == null)
         {
-            return true;
-        }
-        else
-        {
-            return Math.Abs(height(root.left) - height(root.right)) <= 1 && IsBalanced(root.left) && IsBalanced(root.right);
-        }
-    }
-
-    public static int height(TreeNode root)
-    {
-        if(root == null)
-        {
-            return 0;
-        }
-        else
-        {
-            return Math.Max(height(root.left), height(root.right)) + 1;
-        }
-    }
-
-    public static bool IsBalanced2(TreeNode root)
-    {
-        return height2(root) != -1;
-    }
-
-    public static int height2(TreeNode root)
-    {
-        if(root == null)
-        {
-            return 0;
+            return false;
         }
 
-        int leftH = height2(root.left);
-        if(leftH == -1)
+        ListNode slow = head;
+        ListNode fast = head.next;
+
+        while(slow != null || fast.next != null)
         {
-            return -1;
+            if(slow == fast)
+            {
+                return true;
+            }
+
+            slow = slow.next;
+            fast = fast.next.next;
         }
 
-        int rightH = height2(root.right);
-        if(rightH == -1 || Math.Abs(leftH - rightH) > 1)
-        {
-            return -1;
-        }
-
-        return Math.Max(leftH, rightH) + 1;
+        return false;
     }
 }
