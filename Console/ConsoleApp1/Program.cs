@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 
+using System.Runtime.InteropServices;
+
 class Program
 {
     // main function
@@ -9,46 +11,74 @@ class Program
         public int val;
         public TreeNode left;
         public TreeNode right;
-        public TreeNode(int x) { val = x; }
+        public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+        {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
     }
 
     static void Main(string[] args)
     {
-        TreeNode root = new TreeNode(6);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(8);
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(9);
+        root.right = new TreeNode(20);
+        root.right.left = new TreeNode(15);
+        root.right.right = new TreeNode(7);
 
-        root.left.left = new TreeNode(0);
-        root.left.right = new TreeNode(4);
-
-        root.left.right.left = new TreeNode(3);
-        root.left.right.right = new TreeNode(5);
-
-        root.right.left = new TreeNode(7);
-        root.right.right = new TreeNode(9);
-
-        TreeNode p = new TreeNode(2);
-        TreeNode q = new TreeNode(8);
-
-        // output root.val 
-        Console.WriteLine("res: " + LowestCommonAncestor(root, p, q).val);
+        Console.WriteLine("res: " + IsBalanced(root));
+        Console.WriteLine("res2: " + IsBalanced2(root));
     }
 
-
-    public static TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+    public static bool IsBalanced(TreeNode root)
     {
-        int x = root.val;
-
-        if(p.val < x && q.val < x)
+        if(root == null)
         {
-            return LowestCommonAncestor(root.left, p, q);
+            return true;
+        }
+        else
+        {
+            return Math.Abs(height(root.left) - height(root.right)) <= 1 && IsBalanced(root.left) && IsBalanced(root.right);
+        }
+    }
+
+    public static int height(TreeNode root)
+    {
+        if(root == null)
+        {
+            return 0;
+        }
+        else
+        {
+            return Math.Max(height(root.left), height(root.right)) + 1;
+        }
+    }
+
+    public static bool IsBalanced2(TreeNode root)
+    {
+        return height2(root) != -1;
+    }
+
+    public static int height2(TreeNode root)
+    {
+        if(root == null)
+        {
+            return 0;
         }
 
-        if(p.val > x && q.val > x)
+        int leftH = height2(root.left);
+        if(leftH == -1)
         {
-            return LowestCommonAncestor(root.right, p, q);
+            return -1;
         }
 
-        return root;
+        int rightH = height2(root.right);
+        if(rightH == -1 || Math.Abs(leftH - rightH) > 1)
+        {
+            return -1;
+        }
+
+        return Math.Max(leftH, rightH) + 1;
     }
 }
