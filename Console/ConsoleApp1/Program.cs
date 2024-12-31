@@ -1,56 +1,76 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 
-using System.Runtime.InteropServices;
-
 class Program
 {
-    public class ListNode
+    public class TreeNode
     {
         public int val;
-        public ListNode next;
-        public ListNode(int x)
+        public TreeNode left;
+        public TreeNode right;
+        public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
         {
-            val = x;
-            next = null;
+            this.val = val;
+            this.left = left;
+            this.right = right;
         }
     }
 
     static void Main(string[] args)
     {
-        ListNode l1 = new ListNode(3);
-        l1.next = new ListNode(2);
-        l1.next.next = new ListNode(0);
-        l1.next.next.next = new ListNode(-4);
-        l1.next.next.next.next = l1.next;
+        TreeNode root = new TreeNode(9);
+        root.val = 1;
+        root.left = new TreeNode(9);
+        root.right = new TreeNode(20);
+        root.left.val = 2;
+        root.right.val = 3;
+        //root.left.left = new TreeNode(9);
+        root.right.left = new TreeNode(9);
+        root.right.right = new TreeNode(9);
+        root.right.left.val = 4;
+        root.right.right.val = 5;
 
-        //Console.WriteLine("method1: " + HasCycle(l1));
-        Console.WriteLine("method2: " + HasCycle2(l1));
-        //Console.ReadKey();
+        var res = DiameterOfBinaryTree(root);
+        Console.WriteLine("res: " + res);
     }
 
+    public static int max = 0;
 
-    public static bool HasCycle2(ListNode head)
+    /// <summary>
+    /// ref:
+    /// https://ithelp.ithome.com.tw/articles/10227129
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static int DiameterOfBinaryTree(TreeNode root)
     {
-        if(head == null || head.next == null)
-        {
-            return false;
-        }
+        MaxDepth(root);
 
-        ListNode slow = head;
-        ListNode fast = head.next;
-
-        while(slow != null || fast.next != null)
-        {
-            if(slow == fast)
-            {
-                return true;
-            }
-
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-
-        return false;
+        return max;
     }
+
+
+    /// <summary>
+    /// 遞回
+    /// 找出 左子樹 最大深度
+    /// 找出 右子樹 最大深度
+    /// 找出最大者 將兩者相加
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static int MaxDepth(TreeNode root)
+    {
+        if(root == null)
+        {
+            return 0;
+        }
+
+        int left =  MaxDepth(root.left);
+        int right =  MaxDepth(root.right);
+
+        max = Math.Max(max, left + right);
+
+        return Math.Max(left, right) + 1;
+    }
+
 }
