@@ -6,82 +6,69 @@ namespace ConsoleApp1
 {
     class Program
     {
-        public class ListNode
+        public class TreeNode
         {
             public int val;
-            public ListNode next;
-            public ListNode(int val = 0, ListNode next = null)
+            public TreeNode left;
+            public TreeNode right;
+            public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
             {
                 this.val = val;
-                this.next = next;
+                this.left = left;
+                this.right = right;
             }
         }
 
         static void Main(string[] args)
         {
-            ListNode listNode = new ListNode(1);
-            listNode.next = new ListNode(2);
-            listNode.next.next = new ListNode(3);
-            listNode.next.next.next = new ListNode(4);
+            TreeNode root = new TreeNode(3);
 
-            var res = MiddleNode(listNode);
-            Console.Write("method1: ");
-            while (res != null)
-            {
-                Console.Write(res.val + ", ");
-                res = res.next;
-            }
+            root.left = new TreeNode(9);
+            root.right = new TreeNode(20);
 
-            Console.WriteLine("");
-            Console.Write("method2: ");
-            ListNode listNode2 = new ListNode(1);
-            listNode2.next = new ListNode(2);
-            listNode2.next.next = new ListNode(3);
-            listNode2.next.next.next = new ListNode(4);
+            root.right.right = new TreeNode(7);
+            root.right.left = new TreeNode(15);
 
-            var res2 = MiddleNode2(listNode2);
-            while (res2 != null)
-            {
-                Console.Write(res2.val + ", ");
-                res2 = res2.next;
-            }
-            Console.WriteLine("");
+            Console.WriteLine("MaxDepth: " + MaxDepth(root));
+            Console.WriteLine("MaxDepth2: " + MaxDepth2(root));            
         }
 
 
-        public static ListNode MiddleNode(ListNode head)
+        public static int MaxDepth(TreeNode root)
         {
-            ListNode slow = head;
-            ListNode fast = head;
-
-            while(fast != null && fast.next != null)
+            if(root == null)
             {
-                slow = slow.next;
-                fast = fast.next.next;
+                return 0;
             }
 
-            return slow;
+            return Math.Max(MaxDepth(root.left), MaxDepth(root.right)) + 1;
         }
 
-        public static ListNode MiddleNode2(ListNode head)
+        public static int MaxDepth2(TreeNode root)
         {
-            int n = 0;
-            ListNode cur = head;
-            while(cur != null)
+            if(root == null)
             {
-                n++;
-                cur = cur.next;
+                return 0;
             }
 
-            int k = 0;
-            cur = head;
-            while(k < n / 2)
+            if(root.left == null && root.right == null)
             {
-                k++;
-                cur = cur.next;
+                return 1;
             }
 
-            return cur;
+            int maxdepth = 0;
+
+            if(root.left != null)
+            {
+                maxdepth = Math.Max(maxdepth, MaxDepth2(root.left));
+            }
+
+            if(root.right != null)
+            {
+                maxdepth = Math.Max(maxdepth, MaxDepth2(root.right));
+            }
+
+            return maxdepth + 1;
         }
     }
 }
