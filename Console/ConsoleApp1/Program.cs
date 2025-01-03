@@ -6,69 +6,76 @@ namespace ConsoleApp1
 {
     class Program
     {
-        public class TreeNode
-        {
-            public int val;
-            public TreeNode left;
-            public TreeNode right;
-            public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
-            {
-                this.val = val;
-                this.left = left;
-                this.right = right;
-            }
-        }
-
         static void Main(string[] args)
-        {
-            TreeNode root = new TreeNode(3);
+        {   
+            int[][] input = new int[][]
+            {
+                 new int[]{ 1, 2 },
+                 new int[]{ 3, 5 },
+                 new int[]{ 6, 7 },
+                 new int[]{ 8, 10 },
+                 new int[]{ 12, 16 }
+            };
 
-            root.left = new TreeNode(9);
-            root.right = new TreeNode(20);
+            int[] newInterval = {4, 8 };
 
-            root.right.right = new TreeNode(7);
-            root.right.left = new TreeNode(15);
+            var res = Insert(input, newInterval);
 
-            Console.WriteLine("MaxDepth: " + MaxDepth(root));
-            Console.WriteLine("MaxDepth2: " + MaxDepth2(root));            
+            // 不規則陣列輸出
+            for (int i = 0; i < res.Length; i++)
+            {
+                System.Console.Write("Element({0}): ", i);
+
+                for (int j = 0; j < res[i].Length; j++)
+                {
+                    System.Console.Write("{0}{1}", res[i][j], j == (res[i].Length - 1) ? "" : ", ");
+                }
+                System.Console.WriteLine();
+            }
         }
 
 
-        public static int MaxDepth(TreeNode root)
+        public static int[][] Insert(int[][] intervals, int[] newInterval)
         {
-            if(root == null)
+            int left = newInterval[0];
+            int right = newInterval[1];
+            bool merged = false;
+            List<int[]> ansList = new List<int[]>();
+
+            foreach(int[] interval in intervals)
             {
-                return 0;
+                if(interval[0] > right)
+                {
+                    if(!merged)
+                    {
+                        ansList.Add(new int[]{left, right});
+                        merged = true;
+                    }
+                    ansList.Add(interval);
+                }
+                else if(interval[1] < left)
+                {
+                    ansList.Add(interval);
+                }
+                else
+                {
+                    left = Math.Min(left, interval[0]);
+                    right = Math.Max(right, interval[1]);
+                }
             }
 
-            return Math.Max(MaxDepth(root.left), MaxDepth(root.right)) + 1;
-        }
-
-        public static int MaxDepth2(TreeNode root)
-        {
-            if(root == null)
+            if(!merged)
             {
-                return 0;
+                ansList.Add(new int[]{left, right});
             }
 
-            if(root.left == null && root.right == null)
+            int[][] ans = new int[ansList.Count][];
+            for(int i = 0; i < ansList.Count; i++)
             {
-                return 1;
+                ans[i] = ansList[i];
             }
 
-            int maxdepth = 0;
-
-            if(root.left != null)
-            {
-                maxdepth = Math.Max(maxdepth, MaxDepth2(root.left));
-            }
-
-            if(root.right != null)
-            {
-                maxdepth = Math.Max(maxdepth, MaxDepth2(root.right));
-            }
-
-            return maxdepth + 1;
+            return ans;
         }
     }
 }
