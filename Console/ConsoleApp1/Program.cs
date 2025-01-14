@@ -8,75 +8,73 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {   
-            int[][] input = new int[][]
+            int[] array1 = new int[] { -1, 0, 1, 2, -1, -4 };
+            //Console.WriteLine(ThreeSum(array1));
+            var res = ThreeSum(array1);
+
+            // result 裡面 還有一組 temp的list
+            // 所以要跑兩次 才能輸出
+            foreach (var temp2 in res)
             {
-                 new int[]{ 1, 2 },
-                 new int[]{ 3, 5 },
-                 new int[]{ 6, 7 },
-                 new int[]{ 8, 10 },
-                 new int[]{ 12, 16 }
-            };
-
-            int[] newInterval = {4, 8 };
-
-            var res = Insert(input, newInterval);
-
-            // 不規則陣列輸出
-            for (int i = 0; i < res.Length; i++)
-            {
-                System.Console.Write("Element({0}): ", i);
-
-                for (int j = 0; j < res[i].Length; j++)
+                Console.WriteLine("====================");
+                foreach (var out2 in temp2)
                 {
-                    System.Console.Write("{0}{1}", res[i][j], j == (res[i].Length - 1) ? "" : ", ");
+                    Console.WriteLine("輸出結果: " + out2);
                 }
-                System.Console.WriteLine();
             }
         }
 
-
-        public static int[][] Insert(int[][] intervals, int[] newInterval)
+        public static IList<IList<int>> ThreeSum(int[] nums)
         {
-            int left = newInterval[0];
-            int right = newInterval[1];
-            bool merged = false;
-            List<int[]> ansList = new List<int[]>();
-
-            foreach(int[] interval in intervals)
+            List<IList<int>> result = new List<IList<int>>();
+            List<int> temp;
+            Array.Sort(nums);
+            for(int first = 0; first < nums.Length -2; first++)
             {
-                if(interval[0] > right)
+                if(first > 0 && nums[first] == nums[first - 1])
                 {
-                    if(!merged)
+                    continue;
+                }
+
+                int second = first + 1;
+                int third = nums.Length - 1;
+                while(second < third)
+                {
+                    if(nums[second] == nums[second - 1] && second > first + 1)
                     {
-                        ansList.Add(new int[]{left, right});
-                        merged = true;
+                        second++;
+                        continue;
                     }
-                    ansList.Add(interval);
-                }
-                else if(interval[1] < left)
-                {
-                    ansList.Add(interval);
-                }
-                else
-                {
-                    left = Math.Min(left, interval[0]);
-                    right = Math.Max(right, interval[1]);
+
+                    int sum = nums[first] + nums[second] + nums[third];
+                    if(sum == 0)
+                    {
+                        temp = new List<int>
+                        {
+                            nums[first],
+                            nums[second],
+                            nums[third]
+                        };
+
+                        result.Add(temp);
+                        second++;
+                        third--;
+                    }
+                    else if(sum < 0)
+                    {
+                        second++;
+                    }
+                    else
+                    {
+                        third--;
+                    }
                 }
             }
 
-            if(!merged)
-            {
-                ansList.Add(new int[]{left, right});
-            }
-
-            int[][] ans = new int[ansList.Count][];
-            for(int i = 0; i < ansList.Count; i++)
-            {
-                ans[i] = ansList[i];
-            }
-
-            return ans;
+            return result;
         }
+
+
     }
 }
 
