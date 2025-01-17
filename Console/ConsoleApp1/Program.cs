@@ -1,79 +1,72 @@
 ﻿// See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 
-
 namespace ConsoleApp1
 {
-    class Program
+    internal class Program
     {
+ 
         static void Main(string[] args)
         {   
-            int[] array1 = new int[] { -1, 0, 1, 2, -1, -4 };
-            //Console.WriteLine(ThreeSum(array1));
-            var res = ThreeSum(array1);
-
-            // result 裡面 還有一組 temp的list
-            // 所以要跑兩次 才能輸出
-            foreach (var temp2 in res)
-            {
-                Console.WriteLine("====================");
-                foreach (var out2 in temp2)
-                {
-                    Console.WriteLine("輸出結果: " + out2);
-                }
-            }
+            string[] input = { "2", "1", "+", "3", "*" };
+            Console.WriteLine("res: " + EvalRPN(input));        
         }
 
-        public static IList<IList<int>> ThreeSum(int[] nums)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        public static int EvalRPN(string[] tokens)
         {
-            List<IList<int>> result = new List<IList<int>>();
-            List<int> temp;
-            Array.Sort(nums);
-            for(int first = 0; first < nums.Length -2; first++)
+            Stack<int> stack = new Stack<int>();
+            int length = tokens.Length;
+
+            for(int i = 0; i < length; i++)
             {
-                if(first > 0 && nums[first] == nums[first - 1])
+                string token = tokens[i];
+                if(IsNumber(token) == true)
                 {
-                    continue;
+                    stack.Push(int.Parse(token));
                 }
-
-                int second = first + 1;
-                int third = nums.Length - 1;
-                while(second < third)
+                else
                 {
-                    if(nums[second] == nums[second - 1] && second > first + 1)
-                    {
-                        second++;
-                        continue;
-                    }
+                    int num2 = stack.Pop();
+                    int num1 = stack.Pop();
 
-                    int sum = nums[first] + nums[second] + nums[third];
-                    if(sum == 0)
+                    switch(token)
                     {
-                        temp = new List<int>
-                        {
-                            nums[first],
-                            nums[second],
-                            nums[third]
-                        };
-
-                        result.Add(temp);
-                        second++;
-                        third--;
-                    }
-                    else if(sum < 0)
-                    {
-                        second++;
-                    }
-                    else
-                    {
-                        third--;
+                        case "+":
+                            stack.Push(num1 + num2);
+                            break;
+                        case "-":
+                            stack.Push(num1 - num2);
+                            break;
+                        case "*":
+                            stack.Push(num1 * num2);
+                            break;
+                        case "/":
+                            stack.Push(num1 / num2);
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
 
-            return result;
+            return stack.Pop();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool IsNumber(string token)
+        {
+            return char.IsNumber(token[token.Length - 1]);
+        }
 
     }
 }
