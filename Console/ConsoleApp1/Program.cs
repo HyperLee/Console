@@ -8,64 +8,71 @@ namespace ConsoleApp1
  
         static void Main(string[] args)
         {   
-            string[] input = { "2", "1", "+", "3", "*" };
-            Console.WriteLine("res: " + EvalRPN(input));        
+            int[][] prerequisites = new int[][]
+            {
+                 new int[]{ 1, 0 }
+            };
+
+            int numCourses = 2;
+
+            Console.WriteLine("res: " + CanFinish(numCourses, prerequisites));    
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="tokens"></param>
-        /// <returns></returns>
-        public static int EvalRPN(string[] tokens)
+        static IList<int>[] graph;
+        static int[] states;
+
+        public static bool CanFinish(int numCourses, int[][] prerequisites)
         {
-            Stack<int> stack = new Stack<int>();
-            int length = tokens.Length;
+            graph = new List<int>[numCourses];
+            states = new int[numCourses];
+            Array.Fill(states, 0);
 
-            for(int i = 0; i < length; i++)
+            for(int i = 0; i < numCourses; i++)
             {
-                string token = tokens[i];
-                if(IsNumber(token) == true)
-                {
-                    stack.Push(int.Parse(token));
-                }
-                else
-                {
-                    int num2 = stack.Pop();
-                    int num1 = stack.Pop();
+                graph[i] = new List<int>();
+            }
 
-                    switch(token)
-                    {
-                        case "+":
-                            stack.Push(num1 + num2);
-                            break;
-                        case "-":
-                            stack.Push(num1 - num2);
-                            break;
-                        case "*":
-                            stack.Push(num1 * num2);
-                            break;
-                        case "/":
-                            stack.Push(num1 / num2);
-                            break;
-                        default:
-                            break;
-                    }
+            foreach(int[] prerequisite in prerequisites)
+            {
+                graph[prerequisite[1]].Add(prerequisite[0]);
+            }
+
+            for(int i = 0; i < numCourses; i++)
+            {
+                bool valid = DFS(i);
+                if(!valid)
+                {
+                    return false;
                 }
             }
 
-            return stack.Pop();
+            return true;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public static bool IsNumber(string token)
+        public static bool DFS(int curr)
         {
-            return char.IsNumber(token[token.Length - 1]);
+            if(states[curr] == 1)
+            {
+                return false;
+            }
+
+            if(states[curr] == 2)
+            {
+                return true;
+            }
+
+            states[curr] = 1;
+            IList<int> adj = graph[curr];
+            foreach(int next in adj)
+            {
+                bool valid = DFS(next);
+                if(!valid)
+                {
+                    return false;
+                }
+            }
+            states[curr] = 2;
+            return true;
         }
 
     }
