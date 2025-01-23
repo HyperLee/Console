@@ -8,17 +8,72 @@ namespace ConsoleApp1
  
         static void Main(string[] args)
         {   
-            // 99乘法表
-            for (int i = 1; i <= 9; i++)
+            int[][] prerequisites = new int[][]
             {
-                for (int j = 1; j <= 9; j++)
-                {
-                    Console.Write($"{i} * {j} = {i * j}\t");
-                }
-                Console.WriteLine();
-            }
+                 new int[]{ 1, 0 }
+            };
+
+            int numCourses = 2;
+
+            Console.WriteLine("res: " + CanFinish(numCourses, prerequisites));    
         }
 
+        static IList<int>[] graph;
+        static int[] states;
+
+        public static bool CanFinish(int numCourses, int[][] prerequisites)
+        {
+            graph = new List<int>[numCourses];
+            states = new int[numCourses];
+            Array.Fill(states, 0);
+
+            for(int i = 0; i < numCourses; i++)
+            {
+                graph[i] = new List<int>();
+            }
+
+            foreach(int[] prerequisite in prerequisites)
+            {
+                graph[prerequisite[1]].Add(prerequisite[0]);
+            }
+
+            for(int i = 0; i < numCourses; i++)
+            {
+                bool valid = DFS(i);
+                if(!valid)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool DFS(int curr)
+        {
+            if(states[curr] == 1)
+            {
+                return false;
+            }
+
+            if(states[curr] == 2)
+            {
+                return true;
+            }
+
+            states[curr] = 1;
+            IList<int> adj = graph[curr];
+            foreach(int next in adj)
+            {
+                bool valid = DFS(next);
+                if(!valid)
+                {
+                    return false;
+                }
+            }
+            states[curr] = 2;
+            return true;
+        }
 
     }
 }
