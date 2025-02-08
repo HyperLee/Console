@@ -5,32 +5,48 @@ namespace ConsoleApp1
 {
     internal class Program
     {
+        public class TreeNode
+        {
+            public int val;
+            public TreeNode left;
+            public TreeNode right;
+            public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+            {
+                this.val = val;
+                this.left = left;
+                this.right = right;
+            }
+        }
  
         static void Main(string[] args)
         {   
-            int[] coins = new int[] {1, 2, 5};
-            int amount = 11;
-            Console.WriteLine("res: " + CoinChange(coins, amount));
+            TreeNode root = new TreeNode(5);
+            root.left = new TreeNode(1);
+            root.right = new TreeNode(4);
+            root.right.left = new TreeNode(3);
+            root.right.right = new TreeNode(6);
+
+            Console.WriteLine("res: " + IsValidBST(root));
         }
 
-        public static int CoinChange(int[] coins, int amount)
+        public static bool IsValidBST(TreeNode root)
         {
-            int max = amount + 1;
-            int[] dp = new int[amount + 1];
-            Array.Fill(dp, max);
-            dp[0] = 0;
-            for(int i = 1; i <= amount; i++)
+            return helper(root, long.MinValue, long.MaxValue);
+        }
+
+        public static bool helper(TreeNode node, long lowerbound, long upperbound)
+        {
+            if(node == null)
             {
-                for(int j = 0; j < coins.Length; j++)
-                {
-                    if(coins[j] <= i)
-                    {
-                        dp[i] = Math.Min(dp[i], dp[i - coins[j]] + 1);
-                    }
-                }
+                return true;
             }
 
-            return dp[amount] > amount ? -1 : dp[amount]; 
+            if(node.val <= lowerbound || node.val >= upperbound)
+            {
+                return false;
+            }
+
+            return helper(node.left, lowerbound, node.val) && helper(node.right, node.val, upperbound);
         }
 
     }
