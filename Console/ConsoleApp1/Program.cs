@@ -5,50 +5,45 @@ namespace ConsoleApp1
 {
     internal class Program
     {
-        public class TreeNode
-        {
-            public int val;
-            public TreeNode left;
-            public TreeNode right;
-            public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
-            {
-                this.val = val;
-                this.left = left;
-                this.right = right;
-            }
-        }
- 
         static void Main(string[] args)
         {   
-            TreeNode root = new TreeNode(5);
-            root.left = new TreeNode(1);
-            root.right = new TreeNode(4);
-            root.right.left = new TreeNode(3);
-            root.right.right = new TreeNode(6);
+            int[] nums = { 1, 2, 3 };
 
-            Console.WriteLine("res: " + IsValidBST(root));
-        }
-
-        public static bool IsValidBST(TreeNode root)
-        {
-            return helper(root, long.MinValue, long.MaxValue);
-        }
-
-        public static bool helper(TreeNode node, long lowerbound, long upperbound)
-        {
-            if(node == null)
+            var result = Permute(nums);
+            foreach (var item in result)
             {
-                return true;
+                Console.WriteLine(string.Join(",", item));
+            }
+            Console.WriteLine();
+        }
+
+        public static IList<IList<int>> Permute(int[] nums)
+        {
+            IList<IList<int>> result = new List<IList<int>>();
+            List<int> list = new List<int>();
+            Backtrack(nums, list, result);
+            return result;
+        }
+        
+        private static void Backtrack(int[] nums, List<int> list, IList<IList<int>> result)
+        {
+            if(list.Count == nums.Length)
+            {
+                result.Add(new List<int>(list));
+                return;
             }
 
-            if(node.val <= lowerbound || node.val >= upperbound)
+            for(int i = 0; i < nums.Length; i++)
             {
-                return false;
+                if(list.Contains(nums[i]))
+                {
+                    continue;
+                }
+                list.Add(nums[i]);
+                Backtrack(nums, list, result);
+                list.RemoveAt(list.Count - 1);
             }
-
-            return helper(node.left, lowerbound, node.val) && helper(node.right, node.val, upperbound);
         }
-
     }
 }
 
