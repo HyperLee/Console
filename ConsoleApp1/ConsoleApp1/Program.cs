@@ -1,49 +1,52 @@
-﻿// See https://aka.ms/new-console-template for more information
-// Console.WriteLine("Hello, World!");
-
-namespace ConsoleApp1
+﻿namespace ConsoleApp1
 {
     internal class Program
     {
         static void Main(string[] args)
         {   
-            int[] nums = { 1, 2, 3 };
-
-            var result = Permute(nums);
-            foreach (var item in result)
-            {
-                Console.WriteLine(string.Join(",", item));
-            }
-            Console.WriteLine();
+            string s = " +-9x9";
+            int result = MyAtoi(s);
+            Console.WriteLine(result);
         }
 
-        public static IList<IList<int>> Permute(int[] nums)
+        public static int MyAtoi(string s)
         {
-            IList<IList<int>> result = new List<IList<int>>();
-            List<int> list = new List<int>();
-            Backtrack(nums, list, result);
-            return result;
-        }
-        
-        private static void Backtrack(int[] nums, List<int> list, IList<IList<int>> result)
-        {
-            if(list.Count == nums.Length)
+            int i = 0;
+            while(i < s.Length && s[i] == ' ')
             {
-                result.Add(new List<int>(list));
-                return;
+                i++;
+            }
+            
+            bool isNegative = false;
+            if (i < s.Length && s[i] == '-')
+            {
+                isNegative = s[i] == '-';
+                i++;
+            }
+            else if(s[i] == '+')
+            {
+                i++;
+            }
+            else if(char.IsLetter(s[i]))
+            {
+                return 0;
             }
 
-            for(int i = 0; i < nums.Length; i++)
+            int result = 0;
+            while(i < s.Length && s[i] >= '0' && s[i] <= '9')
             {
-                if(list.Contains(nums[i]))
+                int digit = s[i] - '0';
+                if (result > (Int32.MaxValue - digit) / 10)
                 {
-                    continue;
+                    return isNegative ? Int32.MinValue : Int32.MaxValue;
                 }
-                list.Add(nums[i]);
-                Backtrack(nums, list, result);
-                list.RemoveAt(list.Count - 1);
+                result = result * 10 + digit;
+                i++;
             }
+
+            return isNegative ? -result : result;
         }
+
     }
 }
 
