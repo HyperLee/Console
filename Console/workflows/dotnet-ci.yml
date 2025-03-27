@@ -36,3 +36,18 @@ jobs:
         with:
           name: test-results
           path: TestResults
+          
+          
+      - name: 發送 PR 評論（如果測試失敗）
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "🚨 測試失敗！請檢查 GitHub Actions logs 🔍"
+            })
+
