@@ -1,0 +1,53 @@
+name: .NET CI
+
+on:
+  pull_request:
+    branches:
+      - main  # 只在 PR 針對 main 分支時觸發
+  push:
+    branches:
+      - main  # 直接 push 到 main 也會觸發
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # 使用 Ubuntu Runner，你也可以改成 windows-latest 或 macos-latest
+
+    steps:
+      - name: 檢出程式碼
+        uses: actions/checkout@v4
+
+      - name: 安裝 .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: 還原 NuGet 套件
+        run: dotnet restore
+
+      - name: 編譯專案
+        run: dotnet build --no-restore --configuration Release
+
+      - name: 執行單元測試
+        run: dotnet test --no-build --configuration Release --logger trx --results-directory "TestResults"
+
+      - name: 上傳測試結果 (如果失敗)
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: TestResults
+          
+          
+      - name: 發送 PR 評論（如果測試失敗）
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "🚨 測試失敗！請檢查 GitHub Actions logs 🔍"
+            })
+
