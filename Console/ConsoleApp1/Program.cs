@@ -56,7 +56,7 @@ namespace ConsoleApp1
 				
 				if(!dic.ContainsKey(nums[i]))
 				{
-					dic[nums[i]] = i
+					dic[nums[i]] = i;
 				}
 			}
 			
