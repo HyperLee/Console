@@ -23,6 +23,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore ./Console/ConsoleApp1
+      run: dotnet build --configuration Release --no-restore ./Console/ConsoleApp1/
     - name: Test
-      run: dotnet build --configuration Release --no-restore ./Console/ConsoleApp1
+      run: dotnet build --configuration Release --no-restore ./Console/ConsoleApp1/
