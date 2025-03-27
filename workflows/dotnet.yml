@@ -1,0 +1,55 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --configuration Release --no-build
+
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "##[error]Tests failed. Please check the details."
+        echo "::set-output name=comment::Tests failed. Please check the details."
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create comment
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.issues.createComment({
+            issue_number: ${{ github.event.pull_request.number }},
+            owner: ${{ github.repository_owner }},
+            repo: ${{ github.event.repository.name }},
+            body: ${{ steps.build.outputs.comment }}
+          })
